@@ -17,10 +17,12 @@ class SignUp extends React.Component {
       username: '',
       password: '',
       isLoading: false,
+      hidePassword: true,
     };
   }
 
   render() {
+    const {hidePassword} = this.state;
     return (
       <SafeAreaView style={styles.container}>
         <View style={styles.cameraLogo}>
@@ -43,24 +45,46 @@ class SignUp extends React.Component {
             value={this.state.username}
             autoCapitalize="none"
           />
-          <TextInput
-            style={styles.txtInput}
-            placeholder="Password"
-            placeholderTextColor="#9494b8"
-            onChangeText={text => this.setState({password: text})}
-            secureTextEntry={true}
-            value={this.state.password}
-            autoCapitalize="none"
-          />
-          <TextInput
-            style={styles.txtInput}
-            placeholder="Repeat Password"
-            placeholderTextColor="#9494b8"
-            onChangeText={text => this.setState({password: text})}
-            secureTextEntry={true}
-            value={this.state.password}
-            autoCapitalize="none"
-          />
+          <View style={styles.passView}>
+            <TextInput
+              style={styles.passInput}
+              placeholder="Password"
+              placeholderTextColor="#9494b8"
+              onChangeText={text => this.setState({password: text})}
+              secureTextEntry={hidePassword}
+              value={this.state.password}
+              autoCapitalize="none"
+            />
+            <TouchableOpacity
+              onPress={() => {
+                this.setState({hidePassword: !hidePassword});
+              }}>
+              <Image
+                source={require('../Assets/passwordEye.png')}
+                style={styles.eyeImg}
+              />
+            </TouchableOpacity>
+          </View>
+          <View style={styles.passView}>
+            <TextInput
+              style={styles.passInput}
+              placeholder="Repeat Password"
+              placeholderTextColor="#9494b8"
+              onChangeText={text => this.setState({password: text})}
+              secureTextEntry={hidePassword}
+              value={this.state.password}
+              autoCapitalize="none"
+            />
+            <TouchableOpacity
+              onPress={() => {
+                this.setState({hidePassword: !hidePassword});
+              }}>
+              <Image
+                source={require('../Assets/passwordEye.png')}
+                style={styles.eyeImg}
+              />
+            </TouchableOpacity>
+          </View>
         </View>
         <View style={styles.touchableView}>
           <TouchableOpacity style={styles.btn}>
@@ -89,6 +113,18 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: '#c2c2d6',
     marginVertical: 12,
+  },
+  passView: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: '80%',
+    borderBottomWidth: 1,
+    borderBottomColor: '#c2c2d6',
+    marginVertical: 20,
+  },
+  passInput: {
+    marginHorizontal: 5,
+    padding: 10,
   },
   cameraLogo: {
     flex: 0.2,

@@ -14,14 +14,13 @@ import {GoogleSignin, statusCodes} from '@react-native-community/google-signin';
 import {connect} from 'react-redux';
 import {notesLogin} from '../Services/Login/action';
 
-
-
 class Login extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       username: '',
       password: '',
+      hidePassword: true,
     };
   }
   componentDidMount() {
@@ -49,8 +48,8 @@ class Login extends React.Component {
     }
   };
 
- onLogin = () => {
-    const {loading, failure, success, navigation} = this.props;
+  onLogin = () => {
+    const {loading, failure, success} = this.props;
     const {username, password} = this.state;
     this.props.notesLogin(username, password);
     console.log(username, password);
@@ -61,14 +60,14 @@ class Login extends React.Component {
         </View>
       );
     } else if (success === true) {
-      navigation.navigate('notes');
+      this.props.props.navigation.navigate('Notes');
     } else if (failure === true) {
       return Alert.alert('wrong credentials');
     }
   };
 
   render() {
-    
+    const {hidePassword} = this.state;
     return (
       <SafeAreaView style={styles.container}>
         <View style={styles.userLogo}>
@@ -83,15 +82,23 @@ class Login extends React.Component {
             value={this.state.username}
             autoCapitalize="none"
           />
-          <TextInput
-            style={styles.txtInput}
-            placeholder="Password"
-            placeholderTextColor="#9494b8"
-            onChangeText={text => this.setState({password: text})}
-            secureTextEntry={true}
-            value={this.state.password}
-            autoCapitalize="none"
-          />
+          <View style={styles.passwordView}>
+            <TextInput
+              style={styles.passInput}
+              placeholder="Password"
+              placeholderTextColor="#9494b8"
+              onChangeText={text => this.setState({password: text})}
+              secureTextEntry={hidePassword}
+              value={this.state.password}
+              autoCapitalize="none"
+            />
+            <TouchableOpacity
+              onPress={() => {
+                this.setState({hidePassword: !hidePassword});
+              }}>
+              <Image source={require('../Assets/passwordEye.png')} />
+            </TouchableOpacity>
+          </View>
         </View>
         <View style={styles.touchableView}>
           <TouchableOpacity
@@ -150,6 +157,18 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: '#c2c2d6',
     marginVertical: 12,
+  },
+  passwordView: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: '80%',
+    borderBottomWidth: 1,
+    borderBottomColor: '#c2c2d6',
+    marginVertical: 20,
+  },
+  passInput: {
+    marginHorizontal: 5,
+    padding: 10,
   },
   userLogo: {
     flex: 0.2,
