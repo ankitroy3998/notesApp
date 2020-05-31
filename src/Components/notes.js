@@ -5,18 +5,29 @@ import {
   View,
   Image,
   SafeAreaView,
-  TextInput,
+  FlatList,
   TouchableOpacity,
 } from 'react-native';
-import {connect} from 'react-redux';
-import {notesType} from '../Services/Notes/action';
 import Modal from 'react-native-modal';
+import {connect} from 'react-redux';
+import {notesType, updateSelectedCategory} from '../Services/Notes/action';
 
 class Notes extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      isModalVisible: false,
+      modalVisible: false,
+      title: '',
+      info: '',
+      selectedCategory: '',
+      responseMsg: '',
+      categoryCount: 0,
+      category: [
+        {value: 'Personal'},
+        {value: 'Ideas'},
+        {value: 'Work'},
+        {value: 'Lists'},
+      ],
     };
   }
 
@@ -25,16 +36,18 @@ class Notes extends React.Component {
       isModalVisible: false,
     });
   }
+  toggleModal = () => {
+    this.setState({modalVisible: !this.state.modalVisible});
+  };
+
+  onCategoryClick() {
+    this.props.navigation.navigate('NotesList');
+    this.props.notesType(this.state.selectedCategory);
+  }
 
   render() {
-    const {
-      personalCount,
-      workCount,
-      ideasCount,
-      listCount,
-      navigation,
-    } = this.props;
-
+    const {personalCount, workCount, ideasCount, listCount} = this.props;
+    console.log('mere props', this.props);
     return (
       <SafeAreaView style={styles.container}>
         <View style={styles.header}>
@@ -42,25 +55,45 @@ class Notes extends React.Component {
           <Text style={styles.headerTxt2}>Notes</Text>
         </View>
         <View style={styles.body}>
-          <TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => {
+              this.setState({selectedCategory: 'Personal'}, () =>
+                this.onCategoryClick(),
+              );
+            }}>
             <View style={styles.bodyCategory}>
               <Text style={styles.bodyTxt}>Personal</Text>
               <Text style={styles.bodyTxt}>{personalCount}</Text>
             </View>
           </TouchableOpacity>
-          <TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => {
+              this.setState({selectedCategory: 'Work'}, () =>
+                this.onCategoryClick(),
+              );
+            }}>
             <View style={styles.bodyCategory}>
               <Text style={styles.bodyTxt}>Work</Text>
               <Text style={styles.bodyTxt}>{workCount}</Text>
             </View>
           </TouchableOpacity>
-          <TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => {
+              this.setState({selectedCategory: 'Ideas'}, () =>
+                this.onCategoryClick(),
+              );
+            }}>
             <View style={styles.bodyCategory}>
               <Text style={styles.bodyTxt}>Ideas</Text>
               <Text style={styles.bodyTxt}>{ideasCount}</Text>
             </View>
           </TouchableOpacity>
-          <TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => {
+              this.setState({selectedCategory: 'Lists'}, () =>
+                this.onCategoryClick(),
+              );
+            }}>
             <View style={styles.bodyCategory}>
               <Text style={styles.bodyTxt}>Lists</Text>
               <Text style={styles.bodyTxt}>{listCount}</Text>
@@ -76,7 +109,7 @@ class Notes extends React.Component {
           </TouchableOpacity>
           <TouchableOpacity
             onPress={() => {
-              this.setState({isModalVisible: !this.state.isModalVisible});
+              this.toggleModal();
             }}>
             <Image
               style={styles.addBtn}
@@ -84,41 +117,40 @@ class Notes extends React.Component {
             />
           </TouchableOpacity>
         </View>
-        <Modal
-          visible={this.state.isModalVisible}
-          hasBackdrop={true}
-          onBackdropPress={() => {
-            this.goBack();
-          }}>
-          <View style={styles.ModalView}>
-            <View style={styles.modalInput}>
-              <TextInput
-                style={styles.modalTxtBox}
-                placeholder={'Category'}
-                placeholderTextColor="#fff"
-                onChangeText={text => this.setState({Category: text})}
-              />
-            </View>
-            <View style={styles.modalInput}>
-              <TextInput
-                style={styles.modalTxtBox}
-                placeholder={'Title'}
-                placeholderTextColor="#fff"
-                onChangeText={text => this.setState({Title: text})}
-              />
-            </View>
-            <View style={styles.modalInput}>
-              <TextInput
-                style={styles.modalTxtBox}
-                placeholder={'Info'}
-                placeholderTextColor="#fff"
-                onChangeText={text => this.setState({info: text})}
-              />
-            </View>
-            <View style={styles.modalBtnOuterView}>
-              <TouchableOpacity style={styles.modalBtn}>
-                <View style={styles.modalBtnInnerView}>
-                  <Text style={styles.btnTxt}>Submit</Text>
+        <Modal visible={this.state.modalVisible}>
+          <View style={styles.modalMainView}>
+            <FlatList
+              data={this.state.category}
+              renderItem={({item}) => {
+                return (
+                  <View style={styles.listView}>
+                    <TouchableOpacity
+                      onPress={() => {
+                        this.setState({
+                          selectedCategory: item.value,
+                        });
+                      }}
+                      style={styles.listBtn}>
+                      <Text style={styles.listTxt}>{item.value}</Text>
+                    </TouchableOpacity>
+                  </View>
+                );
+              }}
+            />
+            <View style={styles.touchableView}>
+              <TouchableOpacity
+                style={styles.btn}
+                onPress={() => {
+                  this.setState({
+                    modalVisible: false,
+                  });
+                  this.props.navigation.navigate('editNote');
+                  this.props.updateSelectedCategory(
+                    this.state.selectedCategory,
+                  );
+                }}>
+                <View style={styles.submitView}>
+                  <Text>Submit</Text>
                 </View>
               </TouchableOpacity>
             </View>
@@ -159,38 +191,6 @@ const styles = StyleSheet.create({
     marginLeft: 50,
     fontWeight: 'bold',
   },
-  ModalView: {
-    flex: 0.5,
-    width: '100%',
-    backgroundColor: '#008080',
-    borderRadius: 15,
-  },
-  modalInput: {
-    borderBottomWidth: 1,
-    marginHorizontal: 30,
-    marginTop: 40,
-  },
-  modalTxtBox: {
-    fontSize: 20,
-    paddingBottom: 10,
-    marginTop: 20,
-    height: 40,
-  },
-  modalBtn: {
-    padding: 10,
-    backgroundColor: '#8585ad',
-    marginTop: 40,
-    width: '40%',
-    borderRadius: 15,
-  },
-  modalBtnOuterView: {
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  modalBtnInnerView: {
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
   btnTxt: {
     fontSize: 22,
     fontFamily: 'futura-medium',
@@ -200,6 +200,45 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginTop: 10,
+  },
+  modalMainView: {
+    flex: 0.5,
+    backgroundColor: '#008080',
+    borderRadius: 15,
+  },
+  listView: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: 30,
+  },
+  submitView: {
+    alignItems: 'center',
+  },
+  listBtn: {
+    width: '70%',
+    backgroundColor: '#000',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 16,
+    height: 50,
+  },
+  listTxt: {
+    fontSize: 35,
+    fontFamily: 'futura-medium',
+    color: '#fff',
+  },
+  touchableView: {
+    alignItems: 'center',
+    width: '50%',
+    flex: 1,
+  },
+  btn: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '70%',
+    backgroundColor: 'lightblue',
+    height: 45,
+    borderRadius: 15,
   },
   footer: {
     flex: 0.2,
@@ -216,13 +255,15 @@ const styles = StyleSheet.create({
 });
 const mapStateToProps = state => ({
   id: state.loginReducer.id,
-  personalCount: state.notesReducer.personalCount,
-  workCount: state.notesReducer.workCount,
-  ideasCount: state.notesReducer.ideasCount,
-  listCount: state.notesReducer.listCount,
+  personalCount: state.notesReducer.pc,
+  workCount: state.notesReducer.wc,
+  ideasCount: state.notesReducer.ic,
+  listCount: state.notesReducer.lc,
+  selectedCategory: state.notesReducer.selectedCategory,
 });
 const mapDispatchToProps = {
   notesType: notesType,
+  updateSelectedCategory: updateSelectedCategory,
 };
 export default connect(
   mapStateToProps,

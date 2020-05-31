@@ -18,9 +18,10 @@ class Login extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      username: '',
-      password: '',
+      username: 'ankit676',
+      password: 'roy',
       hidePassword: true,
+      loading: false,
     };
   }
   componentDidMount() {
@@ -49,96 +50,106 @@ class Login extends React.Component {
   };
 
   onLogin = () => {
-    const {loading, failure, success} = this.props;
     const {username, password} = this.state;
-    this.props.notesLogin(username, password);
-    console.log(username, password);
-    if (loading === true && success === true) {
-      return (
-        <View>
-          <ActivityIndicator />
-        </View>
-      );
-    } else if (success === true) {
-      this.props.props.navigation.navigate('Notes');
-    } else if (failure === true) {
-      return Alert.alert('wrong credentials');
-    }
+    this.props.notesLogin(username, password).then(
+      resolve => {
+        if (resolve === 200) {
+          this.setState({loading: false});
+          this.props.props.navigation.navigate('Notes');
+        }
+      },
+      reject => {
+        if (reject === 'Error') {
+          this.setState({loading: false});
+          Alert.alert('wrong credentials');
+        } else {
+          this.setState({loading: false});
+          Alert.alert('api is down');
+        }
+      },
+    );
   };
 
   render() {
     const {hidePassword} = this.state;
     return (
       <SafeAreaView style={styles.container}>
-        <View style={styles.userLogo}>
-          <Image source={require('../Assets/user.png')} />
-        </View>
-        <View style={styles.txtBox}>
-          <TextInput
-            style={styles.txtInput}
-            placeholder="Username or email address"
-            placeholderTextColor="#9494b8"
-            onChangeText={text => this.setState({username: text})}
-            value={this.state.username}
-            autoCapitalize="none"
-          />
-          <View style={styles.passwordView}>
-            <TextInput
-              style={styles.passInput}
-              placeholder="Password"
-              placeholderTextColor="#9494b8"
-              onChangeText={text => this.setState({password: text})}
-              secureTextEntry={hidePassword}
-              value={this.state.password}
-              autoCapitalize="none"
-            />
-            <TouchableOpacity
-              onPress={() => {
-                this.setState({hidePassword: !hidePassword});
-              }}>
-              <Image source={require('../Assets/passwordEye.png')} />
-            </TouchableOpacity>
+        {this.state.loading ? (
+          <ActivityIndicator />
+        ) : (
+          <View style={styles.mainView}>
+            <View style={styles.userLogo}>
+              <Image source={require('../Assets/user.png')} />
+            </View>
+            <View style={styles.txtBox}>
+              <TextInput
+                style={styles.txtInput}
+                placeholder="Username or email address"
+                placeholderTextColor="#9494b8"
+                onChangeText={text => this.setState({username: text})}
+                value={this.state.username}
+                autoCapitalize="none"
+              />
+              <View style={styles.passwordView}>
+                <TextInput
+                  style={styles.passInput}
+                  placeholder="Password"
+                  placeholderTextColor="#9494b8"
+                  onChangeText={text => this.setState({password: text})}
+                  secureTextEntry={hidePassword}
+                  value={this.state.password}
+                  autoCapitalize="none"
+                />
+                <TouchableOpacity
+                  onPress={() => {
+                    this.setState({hidePassword: !hidePassword});
+                  }}>
+                  <Image source={require('../Assets/passwordEye.png')} />
+                </TouchableOpacity>
+              </View>
+            </View>
+            <View style={styles.touchableView}>
+              <TouchableOpacity
+                style={styles.btn}
+                onPress={() => {
+                  this.setState({loading: true});
+                  this.onLogin();
+                }}>
+                <Image source={require('../Assets/blueTick.png')} />
+                <Text style={styles.btnTxt}>LOG IN</Text>
+              </TouchableOpacity>
+              <View style={styles.loginView}>
+                <Text style={styles.loginTxt}>Login with</Text>
+              </View>
+              <View style={styles.signInView}>
+                <TouchableOpacity onPress={() => this._signIn()}>
+                  <Image
+                    style={styles.btnStyle}
+                    source={require('../Assets/gplus.png')}
+                  />
+                </TouchableOpacity>
+                <TouchableOpacity>
+                  <Image
+                    style={styles.btnStyle}
+                    source={require('../Assets/github.png')}
+                  />
+                </TouchableOpacity>
+                <TouchableOpacity>
+                  <Image
+                    style={styles.btnStyle}
+                    source={require('../Assets/twitter.png')}
+                  />
+                </TouchableOpacity>
+                <TouchableOpacity>
+                  <Image
+                    style={styles.btnStyle}
+                    source={require('../Assets/facebook.png')}
+                  />
+                </TouchableOpacity>
+              </View>
+            </View>
           </View>
-        </View>
-        <View style={styles.touchableView}>
-          <TouchableOpacity
-            style={styles.btn}
-            onPress={() => {
-              this.onLogin();
-            }}>
-            <Image source={require('../Assets/blueTick.png')} />
-            <Text style={styles.btnTxt}>LOG IN</Text>
-          </TouchableOpacity>
-          <View style={styles.loginView}>
-            <Text style={styles.loginTxt}>Login with</Text>
-          </View>
-          <View style={styles.signInView}>
-            <TouchableOpacity onPress={() => this._signIn()}>
-              <Image
-                style={styles.btnStyle}
-                source={require('../Assets/gplus.png')}
-              />
-            </TouchableOpacity>
-            <TouchableOpacity>
-              <Image
-                style={styles.btnStyle}
-                source={require('../Assets/github.png')}
-              />
-            </TouchableOpacity>
-            <TouchableOpacity>
-              <Image
-                style={styles.btnStyle}
-                source={require('../Assets/twitter.png')}
-              />
-            </TouchableOpacity>
-            <TouchableOpacity>
-              <Image
-                style={styles.btnStyle}
-                source={require('../Assets/facebook.png')}
-              />
-            </TouchableOpacity>
-          </View>
-        </View>
+        )}
       </SafeAreaView>
     );
   }
@@ -147,6 +158,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
+  mainView: {flex: 1},
   txtBox: {
     flex: 0.2,
     alignItems: 'center',
@@ -169,6 +181,7 @@ const styles = StyleSheet.create({
   passInput: {
     marginHorizontal: 5,
     padding: 10,
+    width: '80%',
   },
   userLogo: {
     flex: 0.2,
@@ -234,11 +247,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 8,
   },
 });
-const mapStateToProps = state => ({
-  success: state.loginReducer.loginSuccess,
-  loding: state.loginReducer.loding,
-  failure: state.loginReducer.loginFailure,
-});
+const mapStateToProps = state => ({});
 
 const mapDispatchToProps = {
   notesLogin: notesLogin,
