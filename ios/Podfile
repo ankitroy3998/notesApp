@@ -80,6 +80,9 @@ target 'assessment' do
   pod 'Firebase/Analytics'
   pod 'GoogleSignIn', '~> 5.0.2'
 
+  pod 'FBSDKLoginKit'
+    
+
   target 'assessmentTests' do
     inherit! :complete
     # Pods for testing

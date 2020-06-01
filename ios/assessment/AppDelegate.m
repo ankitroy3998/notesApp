@@ -5,6 +5,7 @@
 #import <React/RCTRootView.h>
 @import Firebase;
 
+
 #if DEBUG
 #import <FlipperKit/FlipperClient.h>
 #import <FlipperKitLayoutPlugin/FlipperKitLayoutPlugin.h>

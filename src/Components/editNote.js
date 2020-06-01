@@ -10,7 +10,7 @@ import {
 import {connect} from 'react-redux';
 import {addNote, updateHome} from '../Services/Notes/action';
 
-class editNote extends React.Component {
+class EditNote extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -113,4 +113,4 @@ const mapDispatchToProps = {
 export default connect(
   mapStateToProps,
   mapDispatchToProps,
-)(editNote);
+)(EditNote);

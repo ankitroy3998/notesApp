@@ -10,7 +10,8 @@ import {
 } from 'react-native';
 import Modal from 'react-native-modal';
 import {connect} from 'react-redux';
-import {notesType, updateSelectedCategory} from '../Services/Notes/action';
+import {imageConstants, colorConstants} from '../Config/constant';
+import {updateSelectedCategory} from '../Services/Notes/action';
 
 class Notes extends React.Component {
   constructor(props) {
@@ -21,7 +22,6 @@ class Notes extends React.Component {
       info: '',
       selectedCategory: '',
       responseMsg: '',
-      categoryCount: 0,
       category: [
         {value: 'Personal'},
         {value: 'Ideas'},
@@ -31,23 +31,19 @@ class Notes extends React.Component {
     };
   }
 
-  goBack() {
-    this.setState({
-      isModalVisible: false,
-    });
-  }
+ 
   toggleModal = () => {
     this.setState({modalVisible: !this.state.modalVisible});
   };
 
-  onCategoryClick() {
-    this.props.navigation.navigate('NotesList');
-    this.props.notesType(this.state.selectedCategory);
+  onCategoryClick(selectedCategory) {
+    this.props.navigation.navigate('DisplayNotes');
+    this.props.updateSelectedCategory(selectedCategory);
+    //this.props.notesType(this.state.selectedCategory);
   }
 
   render() {
     const {personalCount, workCount, ideasCount, listCount} = this.props;
-    console.log('mere props', this.props);
     return (
       <SafeAreaView style={styles.container}>
         <View style={styles.header}>
@@ -57,9 +53,7 @@ class Notes extends React.Component {
         <View style={styles.body}>
           <TouchableOpacity
             onPress={() => {
-              this.setState({selectedCategory: 'Personal'}, () =>
-                this.onCategoryClick(),
-              );
+              this.onCategoryClick('Personal');
             }}>
             <View style={styles.bodyCategory}>
               <Text style={styles.bodyTxt}>Personal</Text>
@@ -68,9 +62,7 @@ class Notes extends React.Component {
           </TouchableOpacity>
           <TouchableOpacity
             onPress={() => {
-              this.setState({selectedCategory: 'Work'}, () =>
-                this.onCategoryClick(),
-              );
+              this.onCategoryClick('Work');
             }}>
             <View style={styles.bodyCategory}>
               <Text style={styles.bodyTxt}>Work</Text>
@@ -79,9 +71,7 @@ class Notes extends React.Component {
           </TouchableOpacity>
           <TouchableOpacity
             onPress={() => {
-              this.setState({selectedCategory: 'Ideas'}, () =>
-                this.onCategoryClick(),
-              );
+              this.onCategoryClick('Ideas');
             }}>
             <View style={styles.bodyCategory}>
               <Text style={styles.bodyTxt}>Ideas</Text>
@@ -90,9 +80,7 @@ class Notes extends React.Component {
           </TouchableOpacity>
           <TouchableOpacity
             onPress={() => {
-              this.setState({selectedCategory: 'Lists'}, () =>
-                this.onCategoryClick(),
-              );
+              this.onCategoryClick('Lists');
             }}>
             <View style={styles.bodyCategory}>
               <Text style={styles.bodyTxt}>Lists</Text>
@@ -102,22 +90,20 @@ class Notes extends React.Component {
         </View>
         <View style={styles.footer}>
           <TouchableOpacity>
-            <Image
-              style={styles.drawerBtn}
-              source={require('../Assets/drawer.png')}
-            />
+            <Image style={styles.drawerBtn} source={imageConstants.drawer} />
           </TouchableOpacity>
           <TouchableOpacity
             onPress={() => {
               this.toggleModal();
             }}>
-            <Image
-              style={styles.addBtn}
-              source={require('../Assets/plus.png')}
-            />
+            <Image style={styles.addBtn} source={imageConstants.plus} />
           </TouchableOpacity>
         </View>
-        <Modal visible={this.state.modalVisible}>
+        <Modal
+          visible={this.state.modalVisible}
+          animationType="slide"
+          hasBackdrop={true}
+          onBackdropPress={this.toggleModal}>
           <View style={styles.modalMainView}>
             <FlatList
               data={this.state.category}
@@ -172,21 +158,21 @@ const styles = StyleSheet.create({
   headerTxt1: {
     fontSize: 60,
     marginLeft: 50,
-    color: '#ff3300',
+    color: colorConstants.red,
     fontWeight: 'bold',
   },
   headerTxt2: {
     fontSize: 60,
     marginLeft: 10,
     fontWeight: 'bold',
-    color: '#002b80',
+    color: colorConstants.darkBlue,
   },
   body: {
     flex: 0.5,
   },
   bodyTxt: {
     fontSize: 40,
-    color: '#002b80',
+    color: colorConstants.darkBlue,
     marginVertical: 20,
     marginLeft: 50,
     fontWeight: 'bold',
@@ -203,7 +189,7 @@ const styles = StyleSheet.create({
   },
   modalMainView: {
     flex: 0.5,
-    backgroundColor: '#008080',
+    backgroundColor: colorConstants.oliveGreen,
     borderRadius: 15,
   },
   listView: {
@@ -216,7 +202,7 @@ const styles = StyleSheet.create({
   },
   listBtn: {
     width: '70%',
-    backgroundColor: '#000',
+    backgroundColor: colorConstants.black,
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: 16,
@@ -225,7 +211,7 @@ const styles = StyleSheet.create({
   listTxt: {
     fontSize: 35,
     fontFamily: 'futura-medium',
-    color: '#fff',
+    color: colorConstants.white,
   },
   touchableView: {
     alignItems: 'center',
@@ -236,7 +222,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     width: '70%',
-    backgroundColor: 'lightblue',
+    backgroundColor: colorConstants.navyBlue,
     height: 45,
     borderRadius: 15,
   },
@@ -262,7 +248,7 @@ const mapStateToProps = state => ({
   selectedCategory: state.notesReducer.selectedCategory,
 });
 const mapDispatchToProps = {
-  notesType: notesType,
+  //notesType: notesType,
   updateSelectedCategory: updateSelectedCategory,
 };
 export default connect(

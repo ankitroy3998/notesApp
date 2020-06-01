@@ -4,7 +4,8 @@ import {createDrawerNavigator} from '@react-navigation/drawer';
 import {Provider} from 'react-redux';
 import store from './src/Services/rootReducer';
 import Notes from './src/Components/notes';
-import editNote from './src/Components/editNote';
+import EditNote from './src/Components/editNote';
+import DisplayNotes from './src/Components/displayNotes';
 import {NavigationContainer} from '@react-navigation/native';
 
 import Main from './src/Components/main';
@@ -37,9 +38,10 @@ function myApp() {
           />
           <Stack.Screen
             name="editNote"
-            component={editNote}
+            component={EditNote}
             options={{header: () => null}}
           />
+          <Stack.Screen name="DisplayNotes" component={DisplayNotes} />
           <Stack.Screen
             options={{header: () => null}}
             name="MyDrawer"

@@ -13,6 +13,7 @@ import {
 import {GoogleSignin, statusCodes} from '@react-native-community/google-signin';
 import {connect} from 'react-redux';
 import {notesLogin} from '../Services/Login/action';
+import {imageConstants, colorConstants} from '../Config/constant';
 
 class Login extends React.Component {
   constructor(props) {
@@ -79,13 +80,13 @@ class Login extends React.Component {
         ) : (
           <View style={styles.mainView}>
             <View style={styles.userLogo}>
-              <Image source={require('../Assets/user.png')} />
+              <Image source={imageConstants.user} />
             </View>
             <View style={styles.txtBox}>
               <TextInput
                 style={styles.txtInput}
                 placeholder="Username or email address"
-                placeholderTextColor="#9494b8"
+                placeholderTextColor={colorConstants.darkGrey}
                 onChangeText={text => this.setState({username: text})}
                 value={this.state.username}
                 autoCapitalize="none"
@@ -94,7 +95,7 @@ class Login extends React.Component {
                 <TextInput
                   style={styles.passInput}
                   placeholder="Password"
-                  placeholderTextColor="#9494b8"
+                  placeholderTextColor={colorConstants.darkGrey}
                   onChangeText={text => this.setState({password: text})}
                   secureTextEntry={hidePassword}
                   value={this.state.password}
@@ -104,7 +105,7 @@ class Login extends React.Component {
                   onPress={() => {
                     this.setState({hidePassword: !hidePassword});
                   }}>
-                  <Image source={require('../Assets/passwordEye.png')} />
+                  <Image source={imageConstants.eye} />
                 </TouchableOpacity>
               </View>
             </View>
@@ -115,7 +116,7 @@ class Login extends React.Component {
                   this.setState({loading: true});
                   this.onLogin();
                 }}>
-                <Image source={require('../Assets/blueTick.png')} />
+                <Image source={imageConstants.tick} />
                 <Text style={styles.btnTxt}>LOG IN</Text>
               </TouchableOpacity>
               <View style={styles.loginView}>
@@ -125,25 +126,25 @@ class Login extends React.Component {
                 <TouchableOpacity onPress={() => this._signIn()}>
                   <Image
                     style={styles.btnStyle}
-                    source={require('../Assets/gplus.png')}
+                    source={imageConstants.gplus}
                   />
                 </TouchableOpacity>
                 <TouchableOpacity>
                   <Image
                     style={styles.btnStyle}
-                    source={require('../Assets/github.png')}
+                    source={imageConstants.github}
                   />
                 </TouchableOpacity>
                 <TouchableOpacity>
                   <Image
                     style={styles.btnStyle}
-                    source={require('../Assets/twitter.png')}
+                    source={imageConstants.twitter}
                   />
                 </TouchableOpacity>
                 <TouchableOpacity>
                   <Image
                     style={styles.btnStyle}
-                    source={require('../Assets/facebook.png')}
+                    source={imageConstants.facebook}
                   />
                 </TouchableOpacity>
               </View>
@@ -167,7 +168,7 @@ const styles = StyleSheet.create({
     padding: 15,
     width: '80%',
     borderBottomWidth: 1,
-    borderBottomColor: '#c2c2d6',
+    borderBottomColor: colorConstants.lightGrey,
     marginVertical: 12,
   },
   passwordView: {
@@ -175,7 +176,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     width: '80%',
     borderBottomWidth: 1,
-    borderBottomColor: '#c2c2d6',
+    borderBottomColor: colorConstants.lightGrey,
     marginVertical: 20,
   },
   passInput: {
@@ -223,7 +224,7 @@ const styles = StyleSheet.create({
   },
 
   btnTxt: {
-    color: '#2e5cb8',
+    color: colorConstants.navyBlue,
     fontSize: 15,
     fontFamily: 'futura-medium',
   },
@@ -232,7 +233,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   loginTxt: {
-    color: '#9494b8',
+    color: colorConstants.darkGrey,
     fontSize: 15,
     marginVertical: 15,
   },

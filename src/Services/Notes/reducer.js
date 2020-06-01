@@ -10,6 +10,11 @@ import {
   ADD_NOTES,
   GET_NOTES,
   UPDATE_CATEGORY,
+  DELETE_NOTE,
+  DECREMENT_PC,
+  DECREMENT_WC,
+  DECREMENT_IC,
+  DECREMENT_LC,
 } from './constant';
 
 const initialState = {
@@ -17,10 +22,6 @@ const initialState = {
   wc: 0,
   ic: 0,
   lc: 0,
-  personalCount: 0,
-  workCount: 0,
-  ideasCount: 0,
-  listCount: 0,
   selectedCategory: '',
   addNote: [],
 };
@@ -43,17 +44,17 @@ const notesReducer = (state = initialState, action = {}) => {
     case INCREMENT_WC:
       return {
         ...state,
-        pc: state.wc + 1,
+        wc: state.wc + 1,
       };
     case INCREMENT_IC:
       return {
         ...state,
-        pc: state.ic + 1,
+        ic: state.ic + 1,
       };
     case INCREMENT_LC:
       return {
         ...state,
-        pc: state.lc + 1,
+        lc: state.lc + 1,
       };
     case UPDATE_CATEGORY:
       return {
@@ -66,6 +67,29 @@ const notesReducer = (state = initialState, action = {}) => {
     case GET_NOTES: {
       return {...state, addNote: action.data};
     }
+    case DELETE_NOTE: {
+      return state;
+    }
+    case DECREMENT_PC:
+      return {
+        ...state,
+        pc: state.pc - 1,
+      };
+    case DECREMENT_WC:
+      return {
+        ...state,
+        wc: state.wc - 1,
+      };
+    case DECREMENT_IC:
+      return {
+        ...state,
+        ic: state.ic - 1,
+      };
+    case DECREMENT_LC:
+      return {
+        ...state,
+        lc: state.lc - 1,
+      };
     default:
       return state;
   }
