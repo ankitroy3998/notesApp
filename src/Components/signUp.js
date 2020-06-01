@@ -17,11 +17,11 @@ class SignUp extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      username: 'aman',
-      password: 'roy',
-      name: 'ankit',
-      phoneNumber: '9958477003',
-      repeatPassword: 'roy',
+      username: '',
+      password: '',
+      name: '',
+      phoneNumber: '',
+      repeatPassword: '',
       loading: false,
       hidePassword: true,
     };
@@ -36,7 +36,7 @@ class SignUp extends React.Component {
           if (resolve === 200) {
             Alert.alert('Successfully Registered');
             this.setState({loading: false});
-            this.props.props.navigation.navigate('Notes');
+            this.props.props.navigation.navigate('MyDrawer');
           }
         },
         reject => {

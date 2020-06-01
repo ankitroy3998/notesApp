@@ -38,7 +38,7 @@ export function notesType(category) {
 }
 export function updateSelectedCategory(selectedCategory) {
   return dispatch => {
-    console.log('konsi category', selectedCategory);
+    console.log(selectedCategory);
     dispatch({type: UPDATE_CATEGORY, data: selectedCategory});
   };
 }
@@ -68,7 +68,7 @@ export const addNote = (title, info, id) => dispatch => {
 };
 
 export function updateHome(category) {
-  console.log('ab ye increment karna hai', category);
+  console.log(category);
   return dispatch => {
     switch (category) {
       case 'Personal':

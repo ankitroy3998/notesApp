@@ -7,6 +7,7 @@ import {
   SafeAreaView,
   FlatList,
   TouchableOpacity,
+  AsyncStorage,
 } from 'react-native';
 import Modal from 'react-native-modal';
 import {connect} from 'react-redux';
@@ -31,7 +32,6 @@ class Notes extends React.Component {
     };
   }
 
- 
   toggleModal = () => {
     this.setState({modalVisible: !this.state.modalVisible});
   };
@@ -40,6 +40,16 @@ class Notes extends React.Component {
     this.props.navigation.navigate('DisplayNotes');
     this.props.updateSelectedCategory(selectedCategory);
     //this.props.notesType(this.state.selectedCategory);
+  }
+  storeLoginData = async () => {
+    try {
+      await AsyncStorage.setItem('id', this.props.id);
+    } catch (error) {
+      console.warn('something went wrong');
+    }
+  };
+  componentDidMount(){
+    this.storeLoginData();
   }
 
   render() {
@@ -89,7 +99,8 @@ class Notes extends React.Component {
           </TouchableOpacity>
         </View>
         <View style={styles.footer}>
-          <TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => this.props.navigation.toggleDrawer()}>
             <Image style={styles.drawerBtn} source={imageConstants.drawer} />
           </TouchableOpacity>
           <TouchableOpacity

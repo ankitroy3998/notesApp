@@ -19,8 +19,8 @@ class Login extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      username: 'ankit676',
-      password: 'roy',
+      username: '',
+      password: '',
       hidePassword: true,
       loading: false,
     };
@@ -56,7 +56,7 @@ class Login extends React.Component {
       resolve => {
         if (resolve === 200) {
           this.setState({loading: false});
-          this.props.props.navigation.navigate('Notes');
+          this.props.props.navigation.navigate('MyDrawer');
         }
       },
       reject => {
@@ -70,6 +70,7 @@ class Login extends React.Component {
       },
     );
   };
+  
 
   render() {
     const {hidePassword} = this.state;
