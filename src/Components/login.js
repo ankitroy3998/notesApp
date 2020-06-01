@@ -11,6 +11,7 @@ import {
   Alert,
 } from 'react-native';
 import {GoogleSignin, statusCodes} from '@react-native-community/google-signin';
+import {LoginManager} from 'react-native-fbsdk';
 import {connect} from 'react-redux';
 import {notesLogin} from '../Services/Login/action';
 import {imageConstants, colorConstants} from '../Config/constant';
@@ -49,6 +50,23 @@ class Login extends React.Component {
       }
     }
   };
+  fbLogin() {
+    LoginManager.logInWithPermissions(['public_profile']).then(
+      function(result) {
+        if (result.isCancelled) {
+          console.log('Login cancelled');
+        } else {
+          console.log(
+            'Login success with permissions: ' +
+              result.grantedPermissions.toString(),
+          );
+        }
+      },
+      function(error) {
+        console.log('Login fail with error: ' + error);
+      },
+    );
+  }
 
   onLogin = () => {
     const {username, password} = this.state;
@@ -70,7 +88,6 @@ class Login extends React.Component {
       },
     );
   };
-  
 
   render() {
     const {hidePassword} = this.state;
@@ -142,7 +159,7 @@ class Login extends React.Component {
                     source={imageConstants.twitter}
                   />
                 </TouchableOpacity>
-                <TouchableOpacity>
+                <TouchableOpacity onPress={() => this.fbLogin()}>
                   <Image
                     style={styles.btnStyle}
                     source={imageConstants.facebook}
